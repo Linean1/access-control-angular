@@ -1,0 +1,23 @@
+<h1>Requests</h1>
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Service</th>
+    <th>Role</th>
+    <th>Status</th>
+  </tr>
+  </thead>
+  <tbody>
+    @for (request of requests; track request.id) {
+      <tr>
+        <td>{{ request.id }}</td>
+        <td>{{ request.service.serviceName }}</td>
+        <td>{{ request.role.roleName }}</td>
+        <td>{{ getLastStatus(request) }}</td>
+      </tr>
+    }
+  </tbody>
+</table>
+<button mat-raised-button color="primary" routerLink="/request-access">Request Access</button>
+<button mat-raised-button color="accent" routerLink="/accesses">My Accesses</button>

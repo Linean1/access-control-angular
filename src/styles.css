@@ -1,1 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
+/* Импорт предопределенной темы Angular Material */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* Глобальные стили */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f7fa;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
