@@ -1,16 +1,29 @@
+export interface SimpleUser {
+  id: number;
+  username: string;
+  employee?: { fullName: string; };
+}
+
 export interface User {
   id: number;
   username: string;
-  password?: string;
-  employee?: { fullName: string };
+  roles: string[];
+}
+
+export interface RequestHistory {
+  statusName: string;
+  changeDate: string;
+  author: SimpleUser;
 }
 
 export interface AccessRequest {
   id: number;
-  user: User;
-  service: Service;
-  role: Role;
-  requestHistories?: RequestHistory[];
+  user: SimpleUser;
+  serviceName: string;
+  roleName: string;
+  requestDate: string;
+  history: RequestHistory[];
+  lastStatus: string;
 }
 
 export interface Service {
@@ -24,10 +37,7 @@ export interface Role {
   roleName: string;
 }
 
-export interface RequestHistory {
-  status: Status;
-}
-
-export interface Status {
-  name: string;
+export interface RequestAccessFormData {
+  roles: Role[];
+  services: Service[];
 }

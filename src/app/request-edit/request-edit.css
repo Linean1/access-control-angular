@@ -1,0 +1,49 @@
+.request-edit-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 120px);
+  padding: 20px;
+  background: #f0f0f0;
+}
+
+mat-card {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+mat-card-title {
+  margin-bottom: 20px;
+  color: #3f51b5;
+}
+
+.button-container {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+mat-raised-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  mat-card {
+    width: 95%;
+    padding: 15px;
+  }
+  .button-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  mat-raised-button {
+    width: 100%;
+  }
+}

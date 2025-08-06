@@ -1,23 +1,123 @@
-<h1>Requests</h1>
-<table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Service</th>
-    <th>Role</th>
-    <th>Status</th>
-  </tr>
-  </thead>
-  <tbody>
-    @for (request of requests; track request.id) {
-      <tr>
-        <td>{{ request.id }}</td>
-        <td>{{ request.service.serviceName }}</td>
-        <td>{{ request.role.roleName }}</td>
-        <td>{{ getLastStatus(request) }}</td>
-      </tr>
-    }
-  </tbody>
-</table>
-<button mat-raised-button color="primary" routerLink="/request-access">Request Access</button>
-<button mat-raised-button color="accent" routerLink="/accesses">My Accesses</button>
+<div class="requests-container">
+  <mat-card>
+    <mat-card-title>Управление Заявками</mat-card-title>
+    <mat-card-content>
+      <mat-tab-group animationDuration="500ms">
+
+        <mat-tab label="Мои Заявки">
+          <div class="tab-content">
+            @if (requests && requests.length > 0) {
+              <mat-table [dataSource]="requests" class="mat-elevation-z8">
+                <ng-container matColumnDef="id">
+                  <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.id }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="service">
+                  <mat-header-cell *matHeaderCellDef>Сервис</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.serviceName }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="role">
+                  <mat-header-cell *matHeaderCellDef>Роль</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.roleName }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <mat-header-cell *matHeaderCellDef>Статус</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.lastStatus }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="requestDate">
+                  <mat-header-cell *matHeaderCellDef>Дата Заявки</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.requestDate | date:'short' }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell *matHeaderCellDef>Действия</mat-header-cell>
+                  <mat-cell *matCellDef="let request">
+                    <button mat-icon-button color="primary" (click)="viewRequest(request.id)" title="Просмотр деталей">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="userDisplayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: userDisplayedColumns;"></mat-row>
+              </mat-table>
+            } @else {
+              <p>У вас пока нет активных заявок.</p>
+            }
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Заявки для Владельца" [disabled]="!isOwner">
+          <div class="tab-content">
+            @if (ownerRequests && ownerRequests.length > 0) {
+              <mat-table [dataSource]="ownerRequests" class="mat-elevation-z8">
+                <ng-container matColumnDef="id">
+                  <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.id }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="user">
+                  <mat-header-cell *matHeaderCellDef>Пользователь</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.user.username }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="service">
+                  <mat-header-cell *matHeaderCellDef>Сервис</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.serviceName }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="role">
+                  <mat-header-cell *matHeaderCellDef>Роль</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.roleName }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <mat-header-cell *matHeaderCellDef>Текущий Статус</mat-header-cell>
+                  <mat-cell *matCellDef="let request">{{ request.lastStatus }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell *matHeaderCellDef>Действия</mat-header-cell>
+                  <mat-cell *matCellDef="let request">
+                    <button mat-raised-button color="primary" (click)="approveRequest(request.id)">Одобрить</button>
+                    <button mat-raised-button color="warn" (click)="rejectRequest(request.id)">Отклонить</button>
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="ownerDisplayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ownerDisplayedColumns;"></mat-row>
+              </mat-table>
+            } @else {
+              <p>Нет заявок, требующих одобрения владельца.</p>
+            }
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Заявки для Администратора" [disabled]="!isAdmin">
+          <div class="tab-content">
+            @if (adminRequests && adminRequests.length > 0) {
+              <mat-table [dataSource]="adminRequests" class="mat-elevation-z8">
+                <ng-container matColumnDef="id"><mat-header-cell *matHeaderCellDef>ID</mat-header-cell><mat-cell *matCellDef="let request">{{ request.id }}</mat-cell></ng-container>
+                <ng-container matColumnDef="user"><mat-header-cell *matHeaderCellDef>Пользователь</mat-header-cell><mat-cell *matCellDef="let request">{{ request.user.username }}</mat-cell></ng-container>
+                <ng-container matColumnDef="service"><mat-header-cell *matHeaderCellDef>Сервис</mat-header-cell><mat-cell *matCellDef="let request">{{ request.serviceName }}</mat-cell></ng-container>
+                <ng-container matColumnDef="role"><mat-header-cell *matHeaderCellDef>Роль</mat-header-cell><mat-cell *matCellDef="let request">{{ request.roleName }}</mat-cell></ng-container>
+                <ng-container matColumnDef="status"><mat-header-cell *matHeaderCellDef>Текущий Статус</mat-header-cell><mat-cell *matCellDef="let request">{{ request.lastStatus }}</mat-cell></ng-container>
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell *matHeaderCellDef>Действия</mat-header-cell>
+                  <mat-cell *matCellDef="let request">
+                    <button mat-raised-button color="primary" (click)="adminApproveRequest(request.id)">Одобрить</button>
+                    <button mat-raised-button color="warn" (click)="adminRejectRequest(request.id)">Отклонить</button>
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="adminDisplayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: adminDisplayedColumns;"></mat-row>
+              </mat-table>
+            } @else {
+              <p>Нет заявок, требующих одобрения администратора.</p>
+            }
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card-content>
+    <mat-card-actions class="button-container">
+      <button mat-raised-button color="primary" routerLink="/request-access">Запросить Доступ</button>
+      <button mat-raised-button color="accent" routerLink="/accesses">Мои Доступы</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

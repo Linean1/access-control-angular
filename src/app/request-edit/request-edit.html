@@ -1,3 +1,72 @@
-<h1>Edit Request Page</h1>
-<button mat-raised-button color="primary" routerLink="/login">Back to Login</button>
-<button mat-raised-button color="accent" routerLink="/request-access">Back to Request Access</button>
+<div class="request-edit-container">
+  <mat-card>
+    <mat-card-title>Детали Заявки</mat-card-title>
+
+    @if (isLoading) {
+      <mat-card-content><p>Загрузка...</p></mat-card-content>
+    } @else if (error) {
+      <mat-card-content><p class="error-message">{{ error }}</p></mat-card-content>
+      <mat-card-actions class="button-container">
+        <button mat-raised-button color="primary" routerLink="/requests">Назад к Заявкам</button>
+      </mat-card-actions>
+    } @else if (request) {
+
+      @if (!isEditing) {
+        <mat-card-content>
+          <mat-list role="list">
+            <mat-list-item role="listitem"><b>ID:</b> {{ request.id }}</mat-list-item>
+            <mat-list-item role="listitem"><b>Пользователь:</b> {{ request.user.username }}</mat-list-item>
+            <mat-list-item role="listitem"><b>Сервис:</b> {{ request.serviceName }}</mat-list-item>
+            <mat-list-item role="listitem"><b>Роль:</b> {{ request.roleName }}</mat-list-item>
+            <mat-list-item role="listitem"><b>Дата создания:</b> {{ request.requestDate | date:'full' }}</mat-list-item>
+            <mat-list-item role="listitem"><b>Текущий статус:</b> {{ request.lastStatus }}</mat-list-item>
+          </mat-list>
+
+          <h3>История изменений:</h3>
+          <mat-list role="list">
+            @for (h of request.history; track h.changeDate) {
+              <mat-list-item role="listitem">
+                <mat-icon matListItemIcon>history</mat-icon>
+                <div matListItemTitle><b>{{ h.statusName }}</b> - {{ h.changeDate | date:'medium' }}</div>
+                <div matListItemLine>Автор изменения: {{ h.author.username }}</div>
+              </mat-list-item>
+            }
+          </mat-list>
+        </mat-card-content>
+        <mat-card-actions class="button-container">
+          <button mat-raised-button color="primary" routerLink="/requests">Назад к Заявкам</button>
+          @if (request.lastStatus === 'REQUESTED') {
+            <button mat-raised-button color="accent" (click)="toggleEdit()">Редактировать</button>
+          }
+        </mat-card-actions>
+
+      } @else {
+        <form #editForm="ngForm" (ngSubmit)="toggleEdit(true)">
+          <mat-card-content>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Сервис</mat-label>
+              <mat-select [(ngModel)]="editedServiceId" name="service" required>
+                @for (service of allServices; track service.id) {
+                  <mat-option [value]="service.id">{{ service.serviceName }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Роль</mat-label>
+              <mat-select [(ngModel)]="editedRoleId" name="role" required>
+                @for (role of allRoles; track role.id) {
+                  <mat-option [value]="role.id">{{ role.roleName }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </mat-card-content>
+          <mat-card-actions class="button-container">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!editForm.valid">Сохранить</button>
+            <button mat-button (click)="toggleEdit()">Отмена</button>
+          </mat-card-actions>
+        </form>
+      }
+    }
+  </mat-card>
+</div>

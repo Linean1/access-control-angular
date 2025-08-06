@@ -10,6 +10,6 @@ export const routes: Routes = [
   { path: 'requests', component: Requests },
   { path: 'accesses', component: Accesses },
   { path: 'request-access', component: RequestAccess },
-  { path: 'request-edit', component: RequestEdit },
+  { path: 'request-edit/:id', component: RequestEdit },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

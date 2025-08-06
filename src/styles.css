@@ -1,22 +1,30 @@
-/* Импорт предопределенной темы Angular Material */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-/* Глобальные стили */
 html, body {
   height: 100%;
   margin: 0;
-  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f7fa;
+  font-family: 'Roboto', sans-serif;
 }
 
-app-root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+.app-content {
+  padding: 20px;
+  min-height: calc(100vh - 120px);
 }
 
-* {
-  box-sizing: border-box;
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 10px;
+  background: #f5f5f5;
+}
+
+@media (max-width: 600px) {
+  .app-content {
+    padding: 10px;
+  }
 }

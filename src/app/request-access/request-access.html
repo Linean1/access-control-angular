@@ -1,3 +1,31 @@
-<h1>Request Access Page</h1>
-<button mat-raised-button color="primary" routerLink="/login">Back to Login</button>
-<button mat-raised-button color="accent" routerLink="/request-edit">Go to Edit Request</button>
+<div class="request-access-container">
+  <mat-card>
+    <mat-card-title>Запросить Доступ</mat-card-title>
+    <mat-card-content>
+      <form #requestForm="ngForm" (ngSubmit)="onSubmit(requestForm)">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Сервис</mat-label>
+          <mat-select [(ngModel)]="selectedServiceId" name="service" required>
+            @for (service of services; track service.id) {
+              <mat-option [value]="service.id">{{ service.serviceName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Роль</mat-label>
+          <mat-select [(ngModel)]="selectedRoleId" name="role" required>
+            @for (role of roles; track role.id) {
+              <mat-option [value]="role.id">{{ role.roleName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!requestForm.valid">Отправить Заявку</button>
+          <button mat-raised-button color="accent" routerLink="/requests">Назад к Заявкам</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
